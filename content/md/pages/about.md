@@ -3,6 +3,10 @@
  :page-index 0
  :navbar? true}
 
-## Write something about something
+ Hello &#129299;, I'm [Frakline](https://github.com/FrankApiyo); coder, clojurian&#129304;  and rollerblader
 
-wow wow wow
+Here's me face &#128512;
+
+![alt text](/img/meface.png "Title")
+
+<!-- TODO - Add image here -->
