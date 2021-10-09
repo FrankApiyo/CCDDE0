@@ -7,6 +7,4 @@
 
 Here's me face &#128512;
 
-![alt text](/img/meface.png "Title")
-
-<!-- TODO - Add image here -->
+![A pic of me face](/img/meface.png "Me face")
