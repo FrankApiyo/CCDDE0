@@ -7,3 +7,10 @@
 
 - CCDDEO is the color code for one of the colors I like the most
 - [Powder blue](https://www.pinterest.co.uk/pin/522910206735138790/) is easy on the eye, I think :shrug:
+
+
+### How do I deploy
+
+```bash
+source ./deploy-script.sh
+```
