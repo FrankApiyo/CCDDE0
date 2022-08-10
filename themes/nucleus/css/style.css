@@ -44,8 +44,7 @@ body {
     color: #555;
     font-weight: 400;
     line-height: 28px;
-    background: #FFF;
-
+    background: #f4eee2;
     text-rendering: optimizeLegibility;
     vertical-align: baseline;
 }
@@ -193,6 +192,7 @@ img.imgfull {
     max-width: 1240px;
     z-index: 2;
     padding: 40px 50px 40px 320px;
+    background: #e2e8d7;
 }
 
 #right p {
