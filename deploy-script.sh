@@ -10,3 +10,4 @@ git add .
 git commit -a -m "Initial page commit"
 git push origin +gh-pages
 git checkout main
+git branch -D gh-pages
