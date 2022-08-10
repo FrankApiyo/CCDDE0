@@ -21,7 +21,7 @@
     box-sizing: border-box;
 }
 
-pre code{
+pre code {
     display: block;
     overflow-x: auto;
     background: #2d2d2d;
@@ -47,6 +47,16 @@ body {
     background: #f4eee2;
     text-rendering: optimizeLegibility;
     vertical-align: baseline;
+    font-family: 'Nunito', sans-serif;
+}
+
+h1 {
+    font-family: 'Rubik Dirt', cursive !important;
+    color: #322929;
+}
+
+a[title="CCDDEO"] span.text {
+    font-family: 'Rubik Microbe', cursive !important;
 }
 
 ::selection {
@@ -284,4 +294,3 @@ img.imgfull {
     }
 
 }
-
