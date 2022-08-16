@@ -22,7 +22,7 @@ First, we need to find the bounds the geojson data for which we would like to re
 (def bounds (GeojsonExtent (clj->js geojson-data)))
 ```
 
-### Create a hexgrid within the map bounds using [turf.js's hexgrin](http://turfjs.org/docs/#hexGrid)
+### Create a hexgrid within the map bounds using [turf.js's hexgrid](http://turfjs.org/docs/#hexGrid)
 
 ```clojure
 (require '["@turf/hex-grid" :as hex-grid])
