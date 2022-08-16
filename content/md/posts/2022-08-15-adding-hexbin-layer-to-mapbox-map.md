@@ -62,7 +62,7 @@ First, we need to find the bounds the geojson data for which we would like to re
 
 (def clean-hexbin-data
     (assoc hex-bin-data
-        :featues (remove nil?
+        :features (remove nil?
                          (count-hexbin-points hex-bin-data))))
 ```
 
