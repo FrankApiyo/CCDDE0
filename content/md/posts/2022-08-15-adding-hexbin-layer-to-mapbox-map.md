@@ -8,7 +8,7 @@
 
 ![3D hexbin layer](/img/3d-hexbin.png "screenshot from ona.io")
 
-3D hexbins provide an interesting way to explore and visualization the geographical distribution of data points on a map.
+3D hexbins provide an interesting way to explore and visualize the geographical distribution of data points on a map.
 
 Here are the steps you can take to implement 3D hexbins using [Mapbox GL JS](https://docs.mapbox.com/mapbox-gl-js/api/) and [Turf.js](http://turfjs.org/) using geojson data (in ClojureScript)
 
