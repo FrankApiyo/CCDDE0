@@ -393,10 +393,12 @@ curl http://127.0.0.1:202
 
 - You should see the following configuration window:
 
-![Kibana Index Pattern Configuration](/img/kibana_index_settings.png "Kibana Index Pattern Configuration")
+![Kibana Index Pattern Configuration](/img/create_index_pattern.png "Kibana Index Pattern Configuration")
 
 - This allows you to define the Elasticsearch indices you’d like to explore in Kibana. To learn more, consult Defining your index patterns in the official Kibana docs. For now, we’ll just use the fluent-* wildcard pattern to capture all the log data in our Elasticsearch cluster. Enter fluent-* in the text box and click on Next step.
 - Click on next, and then in the dropdown hit Create index pattern.
+
+![Kibana Index Pattern](/img/kibana_index_pattern.png "Kibana Index Pattern")
 
 - Now, hit Discover in the left hand navigation menu.
 
