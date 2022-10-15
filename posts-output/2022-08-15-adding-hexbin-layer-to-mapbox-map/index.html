@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"><![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"><![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"><![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<html lang="en">
+<!--<![endif]-->
+
+<head>
+    <!-- Website Template designed by www.downloadwebsitetemplates.co.uk -->
+    <!-- Modified to fit Cryogen.-->
+    <meta charset="UTF-8">
+    <title>CCDDEO: Adding a hexbin layer to a mapbox map</title>
+    
+<meta name="keywords" content="ElasticSearch,kibana,minikube,FluentBit,hex-bin,mapbox,data viz,coming-soon">
+
+<meta property="og:url" content="http://CCDDE0/posts-output/2022-08-15-adding-hexbin-layer-to-mapbox-map/" />
+<meta property="og:title" content="Adding a hexbin layer to a mapbox map" />
+<meta property="og:type" content="article" />
+
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="images/ico/apple-touch-icon-144.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/ico/apple-touch-icon-114.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/ico/apple-touch-icon-72.png">
+    <link rel="apple-touch-icon-precomposed" href="images/ico/apple-touch-icon-57.png">
+    <link rel="shortcut icon" href="/CCDDE0/img/favicon.ico">
+    <link rel="icon" href="/CCDDE0/img/favicon.ico">
+
+    <!-- Google fonts links -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito&family=Rubik+Dirt&family=Rubik+Microbe&display=swap"
+        rel="stylesheet">
+
+    <!--[if IE]><![endif]-->
+    <link href="/CCDDE0/css/buttons.css" rel="stylesheet" type="text/css" />
+    <link href="/CCDDE0/css/menu.css" rel="stylesheet" type="text/css" />
+    <link href="/CCDDE0/css/reset.css" rel="stylesheet" type="text/css" />
+    <link href="/CCDDE0/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/CCDDE0/css/typography.css" rel="stylesheet" type="text/css" />
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet"
+        href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/styles/tomorrow-night-eighties.min.css">
+    <!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+<body>
+
+    <div id="left">
+
+        <p id="logo">
+            <a title="CCDDEO" href="/CCDDE0/">
+                <span class="fa fa-space-shuttle"></span>
+                <span class="text">CCDDEO</span>
+            </a>
+        </p>
+
+        <div id="menucont" class="bodycontainer clearfix">
+            <div class="menutitle">
+                <p><span class="fa fa-reorder"></span><strong>Menu</strong></p>
+            </div>
+            <ul class="menu">
+                <li ><a title="Home" href="/CCDDE0/">Home</a></li>
+                <li ><a title="Archives"
+                        href="/CCDDE0/archives/">Archives</a></li>
+                
+                <li ><a title="Tags"
+                        href="/CCDDE0/tags/">Tags</a></li>
+                
+                
+                <li >
+                    <a href="/CCDDE0/pages-output/about/">About</a>
+                </li>
+                
+                <li><a title="RSS" href="/CCDDE0/feed.xml">RSS</a></li>
+            </ul>
+        </div>
+
+        <div id="socialmedia" class="clearfix">
+            <ul>
+                <li><a title="GitHub" href="https://github.com/FrankApiyo" rel="external"><span
+                            class="fa fa-github"></span></a></li>
+                <li><a title="Stack Overflow" href="https://stackoverflow.com/users/7682273/apiyo" rel="external"><span
+                            class="fa fa-stack-overflow"></span></a></li>
+                <li><a title="LinkedIn" href="https://www.linkedin.com/in/frankline-apiyo-595aa9168"
+                        rel="external"><span class="fa fa-linkedin"></span></a></li>
+                <li><a title="twitter" href="https://twitter.com/franklineapiyo" rel="external"><span
+                            class="fa fa-twitter"></span></a></li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div id="right" class="clearfix">
+        
+<div id="post">
+    <div class="post-header">
+    <div id="post-meta" class="row">
+        <strong>August 15, 2022</strong>
+        
+    </div>
+    <h1>Adding a hexbin layer to a mapbox map</h1>
+</div>
+<div>
+    
+     <!-- toc is for table of content --><h2 id="adding-3d-hexbin-layer-to-a-mapbox-map">Adding 3D hexbin layer to a mapbox map</h2><p><img src="/CCDDE0/img/3d-hexbin.png" alt="3D hexbin layer" title="screenshot from ona.io" /></p><p>3D hexbins provide an interesting way to explore and visualize the geographical distribution of data points on a map.</p><p>Here are the steps you can take to implement 3D hexbins using <a href="https://docs.mapbox.com/mapbox-gl-js/api/">Mapbox GL JS</a> and <a href="http://turfjs.org/">Turf.js</a> using geojson data (in ClojureScript)</p><h3 id="find-the-bounds-of-your-geojson-data">Find the bounds of your geojson data</h3><p>First, we need to find the bounds the geojson data for which we would like to render hexbins.</p><pre><code class="clojure">(require '["@mapbox/geojson-extent" :as GeojsonExtent])
+
+(def bounds (GeojsonExtent (clj-&gt;js geojson-data)))
+</code></pre><h3 id="create-a-hexgrid-within-the-map-bounds-using-turfjss-hexgrid">Create a hexgrid within the map bounds using <a href="http://turfjs.org/docs/#hexGrid">turf.js's hexgrid</a></h3><pre><code class="clojure">(require '["@turf/hex-grid" :as hex-grid])
+
+(def hexgrid
+(hex-grid/default
+    (clj-&gt;js bounds)
+    (or hexbin-radius min-radius)
+    #js {:units "kilometers"}))
+</code></pre><h3 id="collect-all-the-points-youd-like-to-render-in-the-hexgrid-using-turfjss-collect">Collect all the points you'd like to render in the hexgrid using <a href="http://turfjs.org/docs/#collect">turf.js's collect</a></h3><pre><code class="clojure">(require '["@turf/collect" :as collect])
+
+(def hex-bin-data
+    (collect/default
+        hexgrid
+        (-&gt; geojson-data
+            clj-&gt;js
+            explode/default)
+        "id" ;; this is useful if your geojson has a property called `id`
+        "points"))
+</code></pre><h3 id="finally-we-need-to-removeprune-all-the-points-that-do-not-have-any-geodata-collected-in-the-previous-step-from-the-grid">Finally, we need to remove/prune all the points that do not have any geodata collected in the previous step from the grid</h3><pre><code class="clojure">(defn count-hexbin-points
+  "Counts points collected into hexbins."
+  [hexbins]
+  (for [{{:keys [points]} :properties, :as features} (:features hexbins)
+        :let [point-count (count points)]]
+    (when (pos? point-count)
+      (assoc features :properties {:point-count (* 100 point-count)}))))
+
+(def clean-hexbin-data
+    (assoc hex-bin-data
+        :features (remove nil?
+                         (count-hexbin-points hex-bin-data))))
+</code></pre><h3 id="render-resulting-geodata-on-map">Render resulting geodata on map</h3><p>We use the <a href="https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#fill-extrusion">fill-extrusion</a> layer type coupled with <a href="https://docs.mapbox.com/help/getting-started/map-design/#data-driven-styles">data driven styling</a> for the height of each bin</p><p>In the following code, we accomplish this in a delarative maner using <a href="https://visgl.github.io/react-map-gl/">React Map GL's</a> Source and Layer components</p><pre><code class="clojure">[:&gt; Source {:id "hexbin", :type "geojson", :data clean-hexbin-data}
+             [:&gt; Layer
+              {:id "hexbin-layer",
+               :type "fill",
+               :source "hexbin",
+               :paint {"fill-extrusion-base" 1,
+                         "fill-extrusion-color" "#088",
+                         "fill-extrusion-opacity" 0.6,
+                         "fill-extrusion-height" ["get" "point-count"]}}]]
+</code></pre><h3 id="inspiration-credit--sources">Inspiration, credit &amp; sources</h3><ul><li><a href="https://github.com/onaio">https://github.com/onaio</a> colleagues</li><li><a href="https://blog.mapbox.com/exploring-nyc-open-data-with-3d-hexbins-5af2b7d8bc46">https://blog.mapbox.com/exploring-nyc-open-data-with-3d-hexbins-5af2b7d8bc46</a></li></ul>
+</div>
+
+<div id="post-tags">
+    <br/> 
+    <b>Tags: </b>
+    
+    <a href="/CCDDE0/tags-output/hex-bin/">hex-bin</a>
+    
+    <a href="/CCDDE0/tags-output/mapbox/">mapbox</a>
+    
+    <a href="/CCDDE0/tags-output/data%20viz/">data viz</a>
+    
+</div>
+
+<br/>
+
+    <div id="prev-next">
+        
+        <a class="button" href="/CCDDE0/posts-output/2022-10-13-ELK-MINIKUBE/">&laquo; Set up logging pipeline with fluentbit, ES and kibana</a>
+        
+        
+        <a class="right button" href="/CCDDE0/posts-output/2021-10-09-first-post/">Test post &raquo;</a>
+        
+    </div>
+
+    
+
+
+</div>
+
+        <hr />
+        <div id="footercont" class="clearfix">Copyright &copy; 2022 Frankline Apiyo
+            <p>Powered by <a href="http://cryogenweb.org">Cryogen</a></p>
+
+        </div>
+    </div>
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="/CCDDE0/js/highlight.pack.js" type="application/javascript"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script src="/CCDDE0/js/scripts.js" type="application/javascript"></script>
+    
+    
+</body>
+
+</html>

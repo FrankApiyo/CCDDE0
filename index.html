@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"><![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"><![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"><![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<html lang="en">
+<!--<![endif]-->
+
+<head>
+    <!-- Website Template designed by www.downloadwebsitetemplates.co.uk -->
+    <!-- Modified to fit Cryogen.-->
+    <meta charset="UTF-8">
+    <title>CCDDEO</title>
+    
+    <meta name="description" content="Adventures at the prompt">
+    <meta name="keywords" content="">
+    
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="images/ico/apple-touch-icon-144.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/ico/apple-touch-icon-114.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/ico/apple-touch-icon-72.png">
+    <link rel="apple-touch-icon-precomposed" href="images/ico/apple-touch-icon-57.png">
+    <link rel="shortcut icon" href="/CCDDE0/img/favicon.ico">
+    <link rel="icon" href="/CCDDE0/img/favicon.ico">
+
+    <!-- Google fonts links -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito&family=Rubik+Dirt&family=Rubik+Microbe&display=swap"
+        rel="stylesheet">
+
+    <!--[if IE]><![endif]-->
+    <link href="/CCDDE0/css/buttons.css" rel="stylesheet" type="text/css" />
+    <link href="/CCDDE0/css/menu.css" rel="stylesheet" type="text/css" />
+    <link href="/CCDDE0/css/reset.css" rel="stylesheet" type="text/css" />
+    <link href="/CCDDE0/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/CCDDE0/css/typography.css" rel="stylesheet" type="text/css" />
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet"
+        href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/styles/tomorrow-night-eighties.min.css">
+    <!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+<body>
+
+    <div id="left">
+
+        <p id="logo">
+            <a title="CCDDEO" href="/CCDDE0/">
+                <span class="fa fa-space-shuttle"></span>
+                <span class="text">CCDDEO</span>
+            </a>
+        </p>
+
+        <div id="menucont" class="bodycontainer clearfix">
+            <div class="menutitle">
+                <p><span class="fa fa-reorder"></span><strong>Menu</strong></p>
+            </div>
+            <ul class="menu">
+                <li  class="active" ><a title="Home" href="/CCDDE0/">Home</a></li>
+                <li ><a title="Archives"
+                        href="/CCDDE0/archives/">Archives</a></li>
+                
+                <li ><a title="Tags"
+                        href="/CCDDE0/tags/">Tags</a></li>
+                
+                
+                <li >
+                    <a href="/CCDDE0/pages-output/about/">About</a>
+                </li>
+                
+                <li><a title="RSS" href="/CCDDE0/feed.xml">RSS</a></li>
+            </ul>
+        </div>
+
+        <div id="socialmedia" class="clearfix">
+            <ul>
+                <li><a title="GitHub" href="https://github.com/FrankApiyo" rel="external"><span
+                            class="fa fa-github"></span></a></li>
+                <li><a title="Stack Overflow" href="https://stackoverflow.com/users/7682273/apiyo" rel="external"><span
+                            class="fa fa-stack-overflow"></span></a></li>
+                <li><a title="LinkedIn" href="https://www.linkedin.com/in/frankline-apiyo-595aa9168"
+                        rel="external"><span class="fa fa-linkedin"></span></a></li>
+                <li><a title="twitter" href="https://twitter.com/franklineapiyo" rel="external"><span
+                            class="fa fa-twitter"></span></a></li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div id="right" class="clearfix">
+        
+<div id="post">
+    <div class="post-header">
+    <div id="post-meta" class="row">
+        <strong>October 13, 2022</strong>
+        
+    </div>
+    <h1>Set up logging pipeline with fluentbit, ES and kibana</h1>
+</div>
+<div>
+    
+     <!-- toc is for table of content --><h2 id="set-up-logging-pipeline-with-fluentbit-es-and-kibana">Set up logging pipeline with fluentbit, ES and kibana</h2><p>A centralized logging system can be indispensible in evaluating the health of multiple services deployed in a kubernetes cluster (incluiding the cluster itself). This can be useful in troubleshooting and optimization of services.</p><p>In this tutorial, we are going to set up a logging pipeline that will include 3 distinct components</p><ul><li>FluentBit
+<ul><li>Used to collect, transform and ship log data to ElasticSearch. Fluentbit is considered faster and lighter than other alternatives such as fluentd and logstash. This makes it a great choice for cloud and containerized environments such as a kubernetes cluster</li></ul></li><li>ElasticSearch
+<ul><li>ElasticSearch is an analytics and search engine for all types of data. We will used it to ingest and store our logs in the file system</li></ul></li><li>Kibana
+<ul><li>Kibana is a user interface that lets you visualize your ElasticSearch data. We will used it to visualize our cluster logs in table and charts</li></ul></li></ul><p>All the code in this tutorial can be found <a href="https://github.com/FrankApiyo/K8S-ELK-MINIKUBE">here</a></p><h3 id="minikube">Minikube</h3><p>For this tutorials we will used a k8s cluster that runs locally on your computer. We will achieve this using <a href="https://minikube.sigs.k8s.io/docs/">minikube</a>. If you havent already, please go ahead and <a href="https://minikube.sigs.k8s.io/docs/start/">install it.</a></p><p>In order to follow along with the tutorial, aside from <a href="https://minikube.sigs.k8s.io/docs/start/#what-youll-need">minikube resource requirements</a>, you will also need, at least, 15GB of free RAM</p><p>Once you have minikube set up, you are ready to get started :smile:</p><h3 id="step-1-start-your-cluster">Step 1: Start your cluster</h3><pre><code class="console">minikube start
+</code></pre><h3 id="step-2-enable-csi-hostpath-driver-minikube-addon">Step 2: Enable <code>csi-hostpath-driver</code> minikube addon</h3><pre><code class="console">minikube addons enable csi-hostpath-driver
+</code></pre><h3 id="step-3-optinal-run-kubernetes-dashboard-ui">step 3: (Optinal) Run Kubernetes Dashboard UI</h3><ul><li>The kubernetes dashboard can be handy in seeing what's going on in your cluster</li></ul><pre><code class="console">minikube dashboard
+</code></pre><h3 id="step-4-create-a-namespace">step 4: Create a Namespace</h3><ul><li>A namespace is <code>virtual cluster</code> abstraction in k8s. Names of namespaced resources &amp; objects need to be unique with a namespace but not accross namespaces.</li><li>Get a list of namespaces currently running in your cluster:</li></ul><pre><code class="console">apiyo@castle:kube-logging$ kubectl get namespaces
+NAME                   STATUS        AGE
+cert-manager           Active        35d
+default                Active        69d
+ingress-nginx          Active        66d
+kube-node-lease        Active        69d
+kube-public            Active        69d
+kube-system            Active        69d
+kubernetes-dashboard   Active        66d
+monitoring             Active        63d
+</code></pre><ul><li>Create a new namespace by creating a <code>namespace.yaml</code> file with the following content</li></ul><pre><code class="yaml">kind: Namespace
+apiVersion: v1
+metadata:
+  name: kube-logging
+</code></pre><ul><li>Run the following command</li></ul><pre><code class="console">kubectl apply -f namespace.yaml
+</code></pre><ul><li>Verify that the namespace was created</li></ul><pre><code class="apiyo@castle:kube-logging$">NAME                   STATUS   AGE
+cert-manager           Active   35d
+default                Active   69d
+ingress-nginx          Active   66d
+kube-logging           Active   5s
+kube-node-lease        Active   69d
+kube-public            Active   69d
+kube-system            Active   69d
+kubernetes-dashboard   Active   66d
+monitoring             Active   63d
+</code></pre><h3 id="step-4-create-the-elasticsearch-statefulset">step 4: Create the ElasticSearch StatefulSet</h3><ul><li>Create <code>elasticsearch_statefulset.yaml</code> and paste/type in the following YAML:</li></ul><pre><code class="yaml">apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: es-cluster
+  namespace: kube-logging
+spec:
+  serviceName: elasticsearch
+  replicas: 3
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      containers:
+      - name: elasticsearch
+        image: elasticsearch:7.2.0
+        resources:
+          limits:
+            memory: 4096Mi
+            cpu: 1000m
+          requests:
+            cpu: 100m
+        ports:
+        - containerPort: 9200
+          name: rest
+          protocol: TCP
+        - containerPort: 9300
+          name: inter-node
+          protocol: TCP
+        volumeMounts:
+        - name: es-pv-home
+          mountPath: /usr/share/elasticsearch/data
+        env:
+          - name: cluster.name
+            value: k8s-logs
+          - name: node.name
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: discovery.seed_hosts
+            value: "es-cluster-0.elasticsearch,es-cluster-1.elasticsearch,es-cluster-2.elasticsearch"
+          - name: cluster.initial_master_nodes
+            value: "es-cluster-0,es-cluster-1,es-cluster-2"
+          - name: ES_JAVA_OPTS
+            value: "-Xms512m -Xmx512m"
+      initContainers:
+        - name: fix-permissions
+          image: busybox
+          command: ["sh", "-c", "chown -R 1000:1000 /usr/share/elasticsearch/data"]
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: es-pv-home
+              mountPath: /usr/share/elasticsearch/data
+        - name: increase-vm-max-map
+          image: busybox
+          command: ["sysctl", "-w", "vm.max_map_count=262144"]
+          securityContext:
+            privileged: true
+        - name: increase-fd-ulimit
+          image: busybox
+          command: ["sh", "-c", "ulimit -n 65536"]
+          securityContext:
+            privileged: true
+  volumeClaimTemplates:
+  - metadata:
+      name: es-pv-home
+      labels:
+        type: local
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: csi-hostpath-sc
+      resources:
+        requests:
+          storage: 10Mi
+</code></pre><ul><li>This will create a statefulset, and along with it persistent volumes for each pod in the stateful set.</li><li>To examine the persistent volumes created: <code>kubectl -n kube-logging get pv</code></li><li>In addition, it'll run some init containers that will set things up before the <code>elasticsearch</code> container starts</li><li>Create the statefulset by running the following:</li></ul><pre><code class="console">apiyo@castle:kube-logging$ kubectl apply -f elasticsearch_statefulset.yaml 
+statefulset.apps/es-cluster created
+</code></pre><ul><li>You can wait for all the 3 pods of the statefulset to start by running <code>watch kubectl -n kube-logging get pods</code></li></ul><h3 id="step-4-create-the-elasticsearch-service">step 4: Create the ElasticSearch Service</h3><ul><li>Create <code>elasticsearch_svc.yaml</code> and paste/type in the following YAML:</li></ul><pre><code class="YAML">kind: Service
+apiVersion: v1
+metadata:
+  name: elasticsearch
+  namespace: kube-logging
+  labels:
+    app: elasticsearch
+spec:
+  selector:
+    app: elasticsearch
+  clusterIP: None
+  ports:
+    - port: 9200
+      name: rest
+    - port: 9300
+      name: inter-node
+
+</code></pre><ul><li>This service is needed to allow communication between ElastiSearch nodes and also from outside the cluster</li><li>Create the svc by running the following:</li></ul><pre><code class="console">apiyo@castle:kube-logging$ kubectl apply -f elasticsearch_svc.yaml 
+service/elasticsearch created
+</code></pre><ul><li>To verify that the service was created ok</li></ul><pre><code class="console">apiyo@castle:kube-logging$ kubectl -n kube-logging get svc
+NAME            TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)             AGE
+elasticsearch   ClusterIP   None         &lt;none&gt;        9200/TCP,9300/TCP   11s
+</code></pre><ul><li>In order to be able to access the <code>elasticsearch</code> cluster from our host computer, forward the ES port as follows</li></ul><pre><code class="console">apiyo@castle:kube-logging$ kubectl port-forward es-cluster-0 9200:9200 --namespace=kube-logging
+Forwarding from 127.0.0.1:9200 -&gt; 9200
+Forwarding from [::1]:9200 -&gt; 9200
+</code></pre><ul><li>Verify you can access your <code>elasticsearch</code> cluster by running: <code>curl http://localhost:9200/_cluster/state?pretty</code></li></ul><h3 id="step-4-create-a-kibana-deployment">step 4: Create a kibana deployment</h3><ul><li>Create <code>kibana.yaml</code> and paste/type in the following YAML:</li></ul><pre><code class="YAML">apiVersion: v1
+kind: Service
+metadata:
+  name: kibana
+  namespace: kube-logging
+  labels:
+    app: kibana
+spec:
+  ports:
+  - port: 5601
+  selector:
+    app: kibana
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kibana
+  namespace: kube-logging
+  labels:
+    app: kibana
+spec:
+  replicas: 1
+  selector:
+    matchLabels: 
+      app: kibana
+  template:
+    metadata:
+      labels:
+        app: kibana
+    spec:
+      containers:
+      - name: kibana
+        image: kibana:7.2.0
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 2048Mi
+          requests:
+            cpu: 100m
+        env:
+          - name: ELASTICSEARCH_URL
+            value: http://elasticsearch:9200
+        ports:
+        - containerPort: 5601
+</code></pre><ul><li>This will create both a kibana service and a deployment</li><li>Create both these resources by running the following:</li></ul><pre><code class="console">apiyo@castle:kube-logging$ kubectl -n kube-logging apply -f kibana.yaml
+service/kibana created
+deployment.apps/kibana created
+</code></pre><ul><li>Verify that the kibana pod was created ok as follows:</li></ul><pre><code class="console">apiyo@castle:kube-logging$ kubectl -n kube-logging get pods
+NAME                      READY   STATUS    RESTARTS   AGE
+es-cluster-0              1/1     Running   0          15m
+es-cluster-1              1/1     Running   0          15m
+es-cluster-2              1/1     Running   0          14m
+kibana-7595dd5f5f-j87qw   1/1     Running   0          77s
+</code></pre><ul><li><p>You could also check it's logs by running: <code>kubectl -n kube-logging logs kibana-7595dd5f5f-j87qw</code></p></li><li><p>In order to be able to access <code>kibana</code> from our host computer, forward the kibana container port as follows</p></li></ul><pre><code class="console">apiyo@castle:kube-logging$ kubectl port-forward kibana-7595dd5f5f-j87qw 5601:5601 --namespace=kube-logging
+Forwarding from 127.0.0.1:5601 -&gt; 5601
+Forwarding from [::1]:5601 -&gt; 5601
+</code></pre><h3 id="step-5-deploy-fluentbit">step 5: Deploy fluentbit!</h3><ul><li>For this one, we will use <a href="https://helm.sh/">helm</a></li><li>If you haven't installed helm yet, follow the instructions here</li><li>Create <code>fluentbit.yaml</code> and type/paste the following YAML:</li></ul><pre><code class="yaml">---
+image:
+  repository: onaio/fluent-bit
+  tag: "1.9.3-hardened"
+
+config:
+  ## https://docs.fluentbit.io/manual/pipeline/inputs
+  inputs: |
+    [INPUT]
+        Name  tail
+        Path  /var/log/containers/*.log
+        multiline.parser  docker, cri
+
+    [INPUT]
+        Name  cpu
+        Tag   cpu
+
+  ## https://docs.fluentbit.io/manual/pipeline/filters
+  # filters: |
+  #   [FILTER]
+  #       Name k8s
+  #       Match *
+  #       Tag k8s
+  
+  ## https://docs.fluentbit.io/manual/pipeline/outputs
+  outputs: |
+    [OUTPUT]
+        Name            es
+        Match           *
+        Host            elasticsearch
+        Port            9200       
+        Generate_ID     On      
+        Logstash_Format On
+        Logstash_Prefix fluent-bit-temp
+        Retry_Limit     False
+        Replace_Dots    On
+## how to deploy
+# helm upgrade -n kube-logging -f fluentbit.yaml fluent-bit fluent/fluent-bit
+</code></pre><ul><li><p>Add the fluent helm repo:</p><pre><code class="console">helm repo add fluent https://fluent.github.io/helm-charts
+</code></pre></li><li><p>Install fluentbit as follows:</p></li></ul><pre><code class="console">apiyo@castle:kube-logging$ helm upgrade --install -n kube-logging -f fluentbit.yaml fluent-bit fluent/fluent-bit
+Release "fluent-bit" does not exist. Installing it now.
+NAME: fluent-bit
+LAST DEPLOYED: Thu Oct 13 22:10:28 2022
+NAMESPACE: kube-logging
+STATUS: deployed
+REVISION: 1
+NOTES:
+Get Fluent Bit build information by running these commands:
+
+export POD_NAME=$(kubectl get pods --namespace kube-logging -l "app.kubernetes.io/name=fluent-bit,app.kubernetes.io/instance=fluent-bit" -o jsonpath="{.items[0].metadata.name}")
+kubectl --namespace kube-logging port-forward $POD_NAME 2020:2020
+curl http://127.0.0.1:202
+</code></pre><h3 id="step-6-explore-data-collected-by-fluentbit">Step 6: Explore data collected by fluentbit</h3><ul><li>Navigate to <code>http://localhost:5601/</code></li><li>Click on Discover in the left-hand navigation menu:</li></ul><p><img src="/CCDDE0/img/kibana_discover.png" alt="Kibana Discover" title="Kibana Discover" /></p><ul><li>You should see the following configuration window:</li></ul><p><img src="/CCDDE0/img/create_index_pattern.png" alt="Kibana Index Pattern Configuration" title="Kibana Index Pattern Configuration" /></p><ul><li>This allows you to define the Elasticsearch indices you’d like to explore in Kibana. To learn more, consult Defining your index patterns in the official Kibana docs. For now, we’ll just use the fluent-* wildcard pattern to capture all the log data in our Elasticsearch cluster. Enter fluent-* in the text box and click on Next step.</li><li>Click on next, and then in the dropdown hit Create index pattern.</li></ul><p><img src="/CCDDE0/img/kibana_index_pattern.png" alt="Kibana Index Pattern" title="Kibana Index Pattern" /></p><ul><li><p>Now, hit Discover in the left hand navigation menu.</p></li><li><p>You should see a histogram graph and some recent log entries:</p></li></ul><p><img src="/CCDDE0/img/kibana_logs.png" alt="Kibana Incoming Logs" title="Kibana Incoming Logs" /></p><ul><li>At this point you’ve successfully configured and rolled out the EFK stack on your Kubernetes cluster. To learn how to use Kibana to analyze your log data, consult the Kibana User Guide.</li></ul><h3 id="step-7-resource-teardown">Step 7: Resource teardown</h3><ul><li>You can clean up all the resources we created here in one command</li></ul><pre><code class="console">apiyo@castle:kube-logging$ kubectl delete namespace kube-logging
+namespace "kube-logging" deleted
+</code></pre>
+</div>
+
+<div id="post-tags">
+    <br/> 
+    <b>Tags: </b>
+    
+    <a href="/CCDDE0/tags-output/ElasticSearch/">ElasticSearch</a>
+    
+    <a href="/CCDDE0/tags-output/kibana/">kibana</a>
+    
+    <a href="/CCDDE0/tags-output/minikube/">minikube</a>
+    
+    <a href="/CCDDE0/tags-output/FluentBit/">FluentBit</a>
+    
+</div>
+
+<br/>
+
+    
+
+    <div id="prev-next">
+        
+        
+        <a class="button right" href="/CCDDE0/posts-output/2022-08-15-adding-hexbin-layer-to-mapbox-map/">Adding a hexbin layer to a mapbox map &raquo;</a>
+        
+    </div>
+</div>
+
+        <hr />
+        <div id="footercont" class="clearfix">Copyright &copy; 2022 Frankline Apiyo
+            <p>Powered by <a href="http://cryogenweb.org">Cryogen</a></p>
+
+        </div>
+    </div>
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="/CCDDE0/js/highlight.pack.js" type="application/javascript"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script src="/CCDDE0/js/scripts.js" type="application/javascript"></script>
+    
+    
+</body>
+
+</html>
